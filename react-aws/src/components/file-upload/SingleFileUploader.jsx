@@ -3,9 +3,15 @@ import { useState } from "react";
 import { OutlinedInput, TextField, styled } from '@mui/material';
 import axios from "axios";
 
+
+const initialTextField={
+  text:""
+}
+
+
 function SingleFileUploader() {
   const [file, setFile] = useState(null);
-  const [textInput, setTextInput] = useState('');
+  const [textInput, setTextInput] = useState(initialTextField);
 
   const Input = styled(TextField)`
     color: red;
@@ -37,13 +43,21 @@ function SingleFileUploader() {
       console.log("File uploaded successfully.");
       alert("File uploaded successfully.");
       
-      const requestBody = {
-        text: textInput,
-        filePath: `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${file.name}`
-      };
 
       // Here you can send requestBody to your API endpoint
-      await axios.post(UPLOAD_API_ENDPOINT, requestBody);
+      
+      fetch(UPLOAD_API_ENDPOINT, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify({
+          text: textInput,
+          filePath: `https://${S3_BUCKET}.s3.${REGION}.amazonaws.com/${file.name}`
+        })
+      })
+      .then((response)=>{
+        console.log(response);
+      }).catch(error => console.error('Error:', error));
+      // await axios.post(UPLOAD_API_ENDPOINT, requestBody);
 
     } catch (err) {
       alert("File uploaded booo.");
@@ -65,8 +79,9 @@ function SingleFileUploader() {
       <div>
         <input type = "text" 
           id="outlined-basic" 
-          label="Text Input" 
-        />
+          label="Text Input"
+          onChange={(e) =>handleTextChange(e)} />
+        
         <input type="file" onChange={handleFileChange} />
         <button onClick={uploadFile}>Upload</button>
       </div>
