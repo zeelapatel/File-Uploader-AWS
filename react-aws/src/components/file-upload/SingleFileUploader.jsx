@@ -13,11 +13,6 @@ function SingleFileUploader() {
   const [file, setFile] = useState(null);
   const [textInput, setTextInput] = useState(initialTextField);
 
-  const Input = styled(TextField)`
-    color: red;
-    margin: 10px; 
-  `;
-
   // Function to upload file to s3
   const uploadFile = async () => {
     const S3_BUCKET = "react-file";
@@ -41,11 +36,7 @@ function SingleFileUploader() {
     try {
       await s3Client.send(new PutObjectCommand(params));
       console.log("File uploaded successfully.");
-      alert("File uploaded successfully.");
-      
 
-      // Here you can send requestBody to your API endpoint
-      
       fetch(UPLOAD_API_ENDPOINT, {
         method: 'POST',
         mode: 'no-cors',
@@ -57,7 +48,7 @@ function SingleFileUploader() {
       .then((response)=>{
         console.log(response);
       }).catch(error => console.error('Error:', error));
-      // await axios.post(UPLOAD_API_ENDPOINT, requestBody);
+      alert("File uploaded successfully.");
 
     } catch (err) {
       alert("File uploaded booo.");
